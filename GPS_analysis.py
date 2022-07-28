@@ -71,7 +71,7 @@ while True:
     #######################################
 
     # Output in map to visualize
-    if LATITUDE != '' and LONGITUDE != '':
+    if LATITUDE != '' and LONGITUDE != '' and LATITUDE_GM != '' and LONGITUDE_GM != '':
         print("Success Navi")
         # use first site information
         cur_LATITUDE = float(LATITUDE[0:2]) + float(LATITUDE[2:]) / 60
