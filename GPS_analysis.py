@@ -77,8 +77,8 @@ while True:
         cur_LATITUDE = float(LATITUDE[0:2]) + float(LATITUDE[2:]) / 60
         cur_LONGITUDE = float(LONGITUDE[0:3]) + float(LONGITUDE[3:]) / 60
         # # use navigation recommend site information
-        # LATITUDE = float(LATITUDE_GM[0:2]) + float(LATITUDE_GM[2:]) / 60
-        # LONGITUDE = float(LONGITUDE_GM[0:3]) + float(LONGITUDE_GM[3:]) / 60
+        # cur_LATITUDE = float(LATITUDE_GM[0:2]) + float(LATITUDE_GM[2:]) / 60
+        # cur_LONGITUDE = float(LONGITUDE_GM[0:3]) + float(LONGITUDE_GM[3:]) / 60
         print(cur_LATITUDE, cur_LONGITUDE)
         # map it
         map_info = folium.Map(location=[cur_LATITUDE, cur_LONGITUDE], zoom_start=20, control_scale=True)
