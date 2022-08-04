@@ -11,11 +11,9 @@ from selenium import webdriver
 
 FIRST = 1  # temp value see result
 
-# ##start driver
-driver = webdriver.Chrome()
-
 
 def get_gps_data(com="com3"):
+    global LATITUDE, LONGITUDE, LATITUDE_GM, LONGITUDE_GM
     page = []
     PAGE_RECEIVE = False
     # ##initialize serial
@@ -78,13 +76,16 @@ def get_gps_data(com="com3"):
         # use navigation recommend site information
         cur_LATITUDE_GM = float(LATITUDE_GM[0:2]) + float(LATITUDE_GM[2:]) / 60
         cur_LONGITUDE_GM = float(LONGITUDE_GM[0:3]) + float(LONGITUDE_GM[3:]) / 60
-        print(cur_LATITUDE, cur_LONGITUDE)
+    else:
+        print("Failed Navi")
     PAGE_RECEIVE = False
     return cur_LATITUDE, cur_LONGITUDE, cur_LATITUDE_GM, cur_LONGITUDE_GM, float(NAVI_SPEED), float(NAVI_DIRECTION)
 
 
 def draw_map(html_route='file://C:/Users/95414/OneDrive/BDS_Code/GPS/gps.html', is_first=FIRST,
              cur_LATITUDE=None, cur_LONGITUDE=None):
+    # start driver
+    driver = webdriver.Chrome()
     # Output in map to visualize
     # map it
     map_info = folium.Map(location=[cur_LATITUDE, cur_LONGITUDE], zoom_start=20, control_scale=True)
@@ -112,4 +113,3 @@ if __name__ == '__main__':
         FIRST = draw_map(cur_LATITUDE=cur_LATITUDE, cur_LONGITUDE=cur_LONGITUDE)
         # set time to refresh site
         time.sleep(1)
-
