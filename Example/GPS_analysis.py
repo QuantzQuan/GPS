@@ -81,7 +81,7 @@ while True:
         cur_LONGITUDE = float(LONGITUDE_GM[0:3]) + float(LONGITUDE_GM[3:]) / 60
         print(cur_LATITUDE, cur_LONGITUDE)
         # map it
-        map_info = folium.Map(location=[cur_LATITUDE, cur_LONGITUDE], zoom_start=20, control_scale=True)
+        map_info = folium.Map(location=[cur_LATITUDE, cur_LONGITUDE], zoom_start=30, control_scale=True)
         folium.Circle((cur_LATITUDE, cur_LONGITUDE), radius=7, color='yellow', fill=True, fill_color='red',
                       fill_opacity=0.7).add_to(map_info)
         folium.Marker(location=[cur_LATITUDE, cur_LONGITUDE], popup='点', icon=folium.Icon(icon='cloud')).add_to(
@@ -90,12 +90,12 @@ while True:
         map_info.save('gps.html')
         if FIRST == 1:
             # please correct the route in your own computer
-            driver.get('file://C:/Users/95414/Desktop/GPS/gps.html')
+            driver.get('file://C:/Users/95414/OneDrive/BDS_Code/GPS/Example/gps.html')
             FIRST = 0
         else:
             driver.refresh()
 
     # set time to refresh site
-    time.sleep(5)
+    time.sleep(0.5)
     PAGE_RECEIVE = False
 
