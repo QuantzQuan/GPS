@@ -13,7 +13,7 @@ FIRST = 1  # temp value see result
 
 
 def get_gps_data(com="com3"):
-    global LATITUDE, LONGITUDE, LATITUDE_GM, LONGITUDE_GM
+    # global LATITUDE, LONGITUDE, LATITUDE_GM, LONGITUDE_GM
     page = []
     PAGE_RECEIVE = False
     # ##initialize serial
@@ -82,7 +82,7 @@ def get_gps_data(com="com3"):
     return cur_LATITUDE, cur_LONGITUDE, cur_LATITUDE_GM, cur_LONGITUDE_GM, float(NAVI_SPEED), float(NAVI_DIRECTION)
 
 
-def draw_map(html_route='file://C:/Users/95414/OneDrive/BDS_Code/GPS/gps.html', is_first=FIRST,
+def draw_map(html_route='file://C:/Users/95414/OneDrive/BDS_Code/GPS/Example/gps.html', is_first=FIRST,
              cur_LATITUDE=None, cur_LONGITUDE=None):
     # start driver
     driver = webdriver.Chrome()
