@@ -82,7 +82,10 @@ def get_gps_data(com="com3"):
     else:
         print("Failed Navi")
     PAGE_RECEIVE = False
-    return cur_LATITUDE, cur_LONGITUDE, cur_LATITUDE_GM, cur_LONGITUDE_GM, float(NAVI_SPEED), float(NAVI_DIRECTION)
+    if NAVI_SPEED != "" and NAVI_DIRECTION != "":
+        NAVI_SPEED = float(NAVI_SPEED)
+        NAVI_DIRECTION = float(NAVI_DIRECTION)
+    return cur_LATITUDE, cur_LONGITUDE, cur_LATITUDE_GM, cur_LONGITUDE_GM, NAVI_SPEED, NAVI_DIRECTION
 
 
 def draw_map(html_route='file://C:/Users/95414/OneDrive/BDS_Code/GPS/Example/gps.html', is_first=FIRST,
