@@ -10,10 +10,13 @@ import folium
 from selenium import webdriver
 
 FIRST = 1  # temp value see result
+LATITUDE, LONGITUDE, LATITUDE_GM, LONGITUDE_GM = "", "", "", ""
+cur_LATITUDE, cur_LONGITUDE, cur_LATITUDE_GM, cur_LONGITUDE_GM, NAVI_SPEED, NAVI_DIRECTION = 0, 0, 0, 0, 0, 0
 
 
 def get_gps_data(com="com3"):
-    # global LATITUDE, LONGITUDE, LATITUDE_GM, LONGITUDE_GM
+    global LATITUDE, LONGITUDE, LATITUDE_GM, LONGITUDE_GM
+    global cur_LATITUDE, cur_LONGITUDE, cur_LATITUDE_GM, cur_LONGITUDE_GM, NAVI_SPEED, NAVI_DIRECTION
     page = []
     PAGE_RECEIVE = False
     # ##initialize serial
