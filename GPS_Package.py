@@ -6,24 +6,26 @@
 
 import serial
 import time
-import folium
-from selenium import webdriver
 
-FIRST = 1  # temp value see result
 LATITUDE, LONGITUDE, LATITUDE_GM, LONGITUDE_GM = "", "", "", ""
 cur_LATITUDE, cur_LONGITUDE, cur_LATITUDE_GM, cur_LONGITUDE_GM, NAVI_SPEED, NAVI_DIRECTION = 0, 0, 0, 0, 0, 0
 
 
-def get_gps_data(com="com3"):
-    global LATITUDE, LONGITUDE, LATITUDE_GM, LONGITUDE_GM
-    global cur_LATITUDE, cur_LONGITUDE, cur_LATITUDE_GM, cur_LONGITUDE_GM, NAVI_SPEED, NAVI_DIRECTION
-    page = []
-    PAGE_RECEIVE = False
+def init_serial(com="com7"):
     # ##initialize serial
     # under windows system
     ser = serial.Serial(com, 115200, timeout=0.5)
     # # under raspy
     # ser = serial.Serial("/dev/ttyUSB0", 115200, timeout=0.5)
+    return ser
+
+
+def get_gps_data(ser=None):
+    global LATITUDE, LONGITUDE, LATITUDE_GM, LONGITUDE_GM
+    global cur_LATITUDE, cur_LONGITUDE, cur_LATITUDE_GM, cur_LONGITUDE_GM, NAVI_SPEED, NAVI_DIRECTION
+    page = []
+    PAGE_RECEIVE = False
+
     if ser.isOpen():
         ser.close()
     ser.open()
@@ -43,12 +45,15 @@ def get_gps_data(com="com3"):
             # check data whether valid
             for line in enumerate(page):
                 if (line[1][0] != "G") and (line[1][0] != "B"):
-                    print("Format ERROR!")
+                    # print("Format ERROR!")
                     page = []
                     break
                 else:
                     PAGE_RECEIVE = True
-            print("Page Success Receive!")
+            # print("Page Success Receive!")
+
+    # clear all input wait next time
+    ser.flushInput()
 
     # analysis data
     for line in page:
@@ -64,7 +69,6 @@ def get_gps_data(com="com3"):
             # print("GNRMC Location:\n")
             # print("是否定位(A定位成功):", STATE_STA, "维度：", LATITUDE_GM, "南北半球：", HALF_LA_GM, "经度：", LONGITUDE_GM, "东西半球：",
             #       HALF_LO_GM, "航速:", NAVI_SPEED, "航向角:", NAVI_DIRECTION)
-
     #######################################
     # ######### testing site############# #
     # LONGITUDE = "12029.27488"
@@ -72,7 +76,7 @@ def get_gps_data(com="com3"):
     # the site is in the OUC Information Department in Laoshan
     #######################################
     if LATITUDE != '' and LONGITUDE != '' and LATITUDE_GM != '' and LONGITUDE_GM != '':
-        print("Success Navi")
+        # print("Success Navi")
         # use first site information
         cur_LATITUDE = float(LATITUDE[0:2]) + float(LATITUDE[2:]) / 60
         cur_LONGITUDE = float(LONGITUDE[0:3]) + float(LONGITUDE[3:]) / 60
@@ -80,42 +84,25 @@ def get_gps_data(com="com3"):
         cur_LATITUDE_GM = float(LATITUDE_GM[0:2]) + float(LATITUDE_GM[2:]) / 60
         cur_LONGITUDE_GM = float(LONGITUDE_GM[0:3]) + float(LONGITUDE_GM[3:]) / 60
     else:
-        print("Failed Navi")
-    PAGE_RECEIVE = False
+        LATITUDE = LONGITUDE = LATITUDE_GM = LONGITUDE_GM = 0
     if NAVI_SPEED != "" and NAVI_DIRECTION != "":
         NAVI_SPEED = float(NAVI_SPEED)
         NAVI_DIRECTION = float(NAVI_DIRECTION)
+    else:
+        NAVI_SPEED = NAVI_DIRECTION = 0
+    # close serial
+    if ser.isOpen():
+        ser.close()
     return cur_LATITUDE, cur_LONGITUDE, cur_LATITUDE_GM, cur_LONGITUDE_GM, NAVI_SPEED, NAVI_DIRECTION
 
 
-def draw_map(html_route='file://C:/Users/95414/OneDrive/BDS_Code/GPS/Example/gps.html', is_first=FIRST,
-             cur_LATITUDE=None, cur_LONGITUDE=None):
-    # start driver
-    driver = webdriver.Chrome()
-    # Output in map to visualize
-    # map it
-    map_info = folium.Map(location=[cur_LATITUDE, cur_LONGITUDE], zoom_start=20, control_scale=True)
-    folium.Circle((cur_LATITUDE, cur_LONGITUDE), radius=7, color='yellow', fill=True, fill_color='red',
-                  fill_opacity=0.7).add_to(map_info)
-    folium.Marker(location=[cur_LATITUDE, cur_LONGITUDE], popup='点', icon=folium.Icon(icon='cloud')).add_to(
-        map_info)
-    map_info.add_child(folium.LatLngPopup())
-    map_info.save('gps.html')
-    if is_first == 1:
-        # please correct the route in your own computer
-        driver.get(html_route)
-        is_first = 0
-    else:
-        driver.refresh()
-    return is_first
-
-
 if __name__ == '__main__':
+    SER = init_serial("com7")
     while True:
         cur_LATITUDE, cur_LONGITUDE, cur_LATITUDE_GM, cur_LONGITUDE_GM, NAVI_SPEED, NAVI_DIRECTION = get_gps_data(
-            "com3")
+            SER)
+        print(cur_LATITUDE, cur_LONGITUDE, cur_LATITUDE_GM, cur_LONGITUDE_GM, NAVI_SPEED, NAVI_DIRECTION)
         if cur_LATITUDE == '' and cur_LONGITUDE == '' and cur_LATITUDE_GM == '' and cur_LONGITUDE_GM == '':
             continue
-        FIRST = draw_map(cur_LATITUDE=cur_LATITUDE, cur_LONGITUDE=cur_LONGITUDE)
         # set time to refresh site
         time.sleep(1)
